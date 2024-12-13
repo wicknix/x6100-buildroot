@@ -9,8 +9,8 @@ if [ "$PS1" ]; then
 	fi
 fi
 
-export PAGER='/bin/less'
-export EDITOR='/usr/bin/mcedit'
+export PAGER='/usr/bin/less'
+export EDITOR='/usr/bin/nano'
 
 # Source configuration files from /etc/profile.d
 for i in /etc/profile.d/*.sh ; do
