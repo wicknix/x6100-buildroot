@@ -39,7 +39,7 @@ cd ..
 - remove the old build of x6100-gui and rebuild it:
 ```
 export BR2_EXTERNAL="$PWD/x6100-buildroot"
-cd buildroot-2024.08.1
+cd buildroot-2024.11
 rm -fr output/build/x6100-gui-*
 make
 ```
