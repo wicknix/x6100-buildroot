@@ -1,0 +1,2 @@
+# disable persistent network names because when wifi is repeatedly turned off
+# and then on, it renames wlan0 to wlan1, then to wlan2, and so on

@@ -1,0 +1,12 @@
+diff -Naur liquid-dsp.orig/src/fft/src/spgram.proto.c liquid-dsp/src/fft/src/spgram.proto.c
+--- liquid-dsp.orig/src/fft/src/spgram.proto.c	2023-06-19 18:04:12.000000000 -0400
++++ liquid-dsp/src/fft/src/spgram.proto.c	2024-11-03 13:10:03.703609579 -0500
+@@ -452,7 +452,7 @@
+     // compute magnitude (linear) and run FFT shift
+     unsigned int i;
+     unsigned int nfft_2 = _q->nfft / 2;
+-    T scale = _q->accumulate ? 1.0f / max(1,_q->num_transforms) : 0.0f;
++    T scale = _q->accumulate ? 1.0f / max(1,_q->num_transforms) : 1.0f;
+     // TODO: adjust scale if infinite integration
+     for (i=0; i<_q->nfft; i++) {
+         unsigned int k = (i + nfft_2) % _q->nfft;

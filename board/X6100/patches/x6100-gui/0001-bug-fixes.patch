@@ -1,0 +1,56 @@
+diff -Naur x6100_gui.orig/src/dialog_gps.c x6100_gui/src/dialog_gps.c
+--- x6100_gui.orig/src/dialog_gps.c	2024-12-08 21:50:02.371632451 -0500
++++ x6100_gui/src/dialog_gps.c	2024-12-08 22:24:20.325248294 -0500
+@@ -185,7 +185,7 @@
+         deg_to_str2(deg_type, msg->fix.longitude, str, sizeof(str), "E", "W");
+         lv_label_set_text(lon, str);
+ 
+-        const char * qth_val[9];
++        const char qth_val[9];
+         qth_pos_to_str(msg->fix.latitude, msg->fix.longitude, qth_val);
+         lv_label_set_text(qth, qth_val);
+ 
+diff -Naur x6100_gui.orig/src/pannel.c x6100_gui/src/pannel.c
+--- x6100_gui.orig/src/pannel.c	2024-12-08 21:50:02.376632620 -0500
++++ x6100_gui/src/pannel.c	2024-12-08 22:17:42.596898237 -0500
+@@ -92,7 +92,7 @@
+ }
+ 
+ void pannel_add_text(const char * text) {
+-    scheduler_put(pannel_update_cb, text, strlen(text) + 1);
++    scheduler_put((scheduler_fn_t) pannel_update_cb, (void *) text, strlen(text) + 1);
+ }
+ 
+ void pannel_hide() {
+diff -Naur x6100_gui.orig/src/wifi.cpp x6100_gui/src/wifi.cpp
+--- x6100_gui.orig/src/wifi.cpp	2024-12-08 21:50:02.378632687 -0500
++++ x6100_gui/src/wifi.cpp	2024-12-08 22:30:36.154795460 -0500
+@@ -159,7 +159,7 @@
+         aps = nm_device_wifi_get_access_points(NM_DEVICE_WIFI(device));
+ 
+         // map ssid -> [strength, ap_vec_id]
+-        std::map<std::string, std::array<uint, 2>> ssid_strength_map{};
++        std::map<std::string, uint[2]> ssid_strength_map{};
+         std::vector<wifi_ap_info_t>                ap_info_vec;
+ 
+         for (i = 0; i < aps->len; i++) {
+@@ -173,15 +173,13 @@
+             if ((search != ssid_strength_map.end()) && (ssid.compare(EMPTY_SSID_STR) !=0 )) {
+                 if (search->second[0] < ap_info.strength) {
+                     ap_info_vec[ssid_strength_map[ssid][1]] = ap_info;
+-                    ssid_strength_map[ssid] = {
+-                        {ap_info.strength, i}
+-                    };
++                    ssid_strength_map[ssid][0] = ap_info.strength;
++                    ssid_strength_map[ssid][1] = i;
+                 }
+ 
+             } else {
+-                ssid_strength_map[ssid] = {
+-                    {ap_info.strength, ap_info_vec.size()}
+-                };
++                ssid_strength_map[ssid][0] = ap_info.strength;
++                ssid_strength_map[ssid][1] = ap_info_vec.size();
+                 ap_info_vec.push_back(ap_info);
+             }
+         }

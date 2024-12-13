@@ -1,0 +1,117 @@
+diff -Naur x6100_gui.orig/src/backlight.c x6100_gui/src/backlight.c
+--- x6100_gui.orig/src/backlight.c	2024-12-08 21:50:02.370632417 -0500
++++ x6100_gui/src/backlight.c	2024-12-08 21:54:05.869841153 -0500
+@@ -26,7 +26,7 @@
+ 
+ static void backlight_timer(lv_timer_t *t) {
+     backlight_set_brightness(params.brightness_idle);
+-    x6100_gpio_set(x6100_pin_light, params.brightness_buttons == BUTTONS_LIGHT ? 1 : 0);
++    x6100_gpio_set("keyboard_backlight", params.brightness_buttons == BUTTONS_LIGHT ? 1 : 0);
+     timer = NULL;
+ }
+ 
+@@ -65,7 +65,7 @@
+         lv_timer_set_repeat_count(timer, 1);
+ 
+         backlight_set_brightness(params.brightness_normal);
+-        x6100_gpio_set(x6100_pin_light, params.brightness_buttons == BUTTONS_DARK ? 0 : 1);
++        x6100_gpio_set("keyboard_backlight", params.brightness_buttons == BUTTONS_DARK ? 0 : 1);
+     }
+ }
+ 
+@@ -88,14 +88,14 @@
+     params.brightness_buttons = value;
+     params_unlock(&params.dirty.brightness_buttons);
+ 
+-    x6100_gpio_set(x6100_pin_light, value == BUTTONS_DARK ? 0 : 1);
++    x6100_gpio_set("keyboard_backlight", value == BUTTONS_DARK ? 0 : 1);
+ }
+ 
+ void backlight_switch() {
+     if (on) {
+         set_power(false);
+         set_brightness(9);
+-        x6100_gpio_set(x6100_pin_light, 0);
++        x6100_gpio_set("keyboard_backlight", 0);
+ 
+         on = false;
+         voice_say_text_fmt("Display off");
+@@ -104,7 +104,7 @@
+         lv_disp_enable_invalidation(lv_disp_get_default(), true);
+         set_power(true);
+         set_brightness(params.brightness_normal);
+-        x6100_gpio_set(x6100_pin_light, params.brightness_buttons == BUTTONS_DARK ? 0 : 1);
++        x6100_gpio_set("keyboard_backlight", params.brightness_buttons == BUTTONS_DARK ? 0 : 1);
+ 
+         voice_say_text_fmt("Display on");
+         on = true;
+diff -Naur x6100_gui.orig/src/cat.c x6100_gui/src/cat.c
+--- x6100_gui.orig/src/cat.c	2024-12-08 21:50:02.371632451 -0500
++++ x6100_gui/src/cat.c	2024-12-08 21:54:24.042453794 -0500
+@@ -457,7 +457,7 @@
+ void cat_init() {
+     /* UART */
+ 
+-    x6100_gpio_set(x6100_pin_usb, 1);  /* USB -> CAT */
++    x6100_gpio_set("civ", 1);  /* USB -> CAT */
+ 
+     fd = open("/dev/ttyS2", O_RDWR | O_NONBLOCK | O_NOCTTY);
+ 
+diff -Naur x6100_gui.orig/src/radio.c x6100_gui/src/radio.c
+--- x6100_gui.orig/src/radio.c	2024-12-08 21:50:02.377632654 -0500
++++ x6100_gui/src/radio.c	2024-12-08 21:55:36.941911337 -0500
+@@ -244,15 +244,12 @@
+ }
+ 
+ void radio_bb_reset() {
+-    x6100_gpio_set(x6100_pin_bb_reset, 1);
++    x6100_gpio_set("bb_reset", 1);
+     usleep(100000);
+-    x6100_gpio_set(x6100_pin_bb_reset, 0);
++    x6100_gpio_set("bb_reset", 0);
+ }
+ 
+ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb, radio_state_change_t atu_update_cb) {
+-    if (!x6100_gpio_init())
+-        return;
+-
+     while (!x6100_control_init()) {
+         usleep(100000);
+     }
+@@ -260,7 +257,7 @@
+     if (!x6100_flow_init())
+         return;
+ 
+-    x6100_gpio_set(x6100_pin_morse_key, 1);     /* Morse key off */
++    x6100_gpio_set("morse_key", 1);     /* Morse key off */
+ 
+     notify_tx = tx_cb;
+     notify_rx = rx_cb;
+@@ -1150,5 +1147,5 @@
+ }
+ 
+ void radio_set_morse_key(bool on) {
+-    x6100_gpio_set(x6100_pin_morse_key, on ? 0 : 1);
++    x6100_gpio_set("morse_key", on ? 0 : 1);
+ }
+diff -Naur x6100_gui.orig/src/wifi.cpp x6100_gui/src/wifi.cpp
+--- x6100_gui.orig/src/wifi.cpp	2024-12-08 21:50:02.378632687 -0500
++++ x6100_gui/src/wifi.cpp	2024-12-08 21:56:01.637743889 -0500
+@@ -89,7 +89,7 @@
+ void wifi_power_on() {
+     LV_LOG_USER("Power on wifi/bt");
+     params_bool_set(&params.wifi_enabled, true);
+-    x6100_gpio_set(x6100_pin_wifi, 0);
++    x6100_gpio_set("wifi", 0);
+     if (!device) {
+         set_status(WIFI_STARTING);
+     }
+@@ -103,7 +103,7 @@
+         device = NULL;
+     }
+     params_bool_set(&params.wifi_enabled, false);
+-    x6100_gpio_set(x6100_pin_wifi, 1);
++    x6100_gpio_set("wifi", 1);
+     if (scan_timer) {
+         lv_timer_del(scan_timer);
+         scan_timer = NULL;

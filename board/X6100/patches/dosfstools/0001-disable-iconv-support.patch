@@ -1,0 +1,13 @@
+diff -Naur dosfstools.orig/configure dosfstools/configure
+--- dosfstools.orig/configure	2021-01-31 07:49:25.000000000 -0500
++++ dosfstools/configure	2024-11-07 08:16:23.157379385 -0500
+@@ -5398,6 +5398,9 @@
+ 
+ # optional iconv support
+ 
++# disable iconv because of BR2_ENABLE_LOCALE=y
++with_iconv=no
++
+ # Check whether --with-iconv was given.
+ if test "${with_iconv+set}" = set; then :
+   withval=$with_iconv;

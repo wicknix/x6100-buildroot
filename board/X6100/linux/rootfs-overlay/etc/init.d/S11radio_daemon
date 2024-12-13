@@ -1,0 +1,29 @@
+#!/bin/sh
+
+case "$1" in
+    start)
+        # init gpios
+        gpioset -t 0 keyboard_backlight=on
+        gpioset -t 0 civ=off
+        #gpioset -t 0 wifi=on
+
+        # create DNS soft link
+        ln -sf /run/NetworkManager/resolv.conf /etc/resolv.conf
+
+        # show power on welcome screen
+        ;;
+    stop)
+        # deinit gpios
+        gpioget keyboard_backlight
+        gpioget civ
+        #gpioget wifi
+
+        # show power off goodbye screen
+        ;;
+    *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+
+exit 0

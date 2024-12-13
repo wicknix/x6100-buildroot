@@ -1,0 +1,152 @@
+diff -Naur X6100Control.orig/examples/atu.c X6100Control/examples/atu.c
+--- X6100Control.orig/examples/atu.c	2024-12-08 21:21:00.340500250 -0500
++++ X6100Control/examples/atu.c	2024-12-08 21:28:53.850575264 -0500
+@@ -32,9 +32,6 @@
+     if (!x6100_flow_init())
+         return 1;
+ 
+-    if (!x6100_gpio_init())
+-        return 1;
+-
+     x6100_control_vfo_freq_set(X6100_VFO_A, 7135000);
+ 
+     while (atu != ATU_DONE) {
+@@ -52,7 +49,7 @@
+         {
+         case ATU_IDLE:
+             x6100_control_atu_tune(true);
+-            x6100_gpio_set(x6100_pin_light, 1);
++            x6100_gpio_set("keyboard_backlight", 1);
+             atu = ATU_START;
+             break;
+ 
+@@ -67,7 +64,7 @@
+             if (!pack.flag.tx)
+             {
+                 x6100_control_atu_tune(false);
+-                x6100_gpio_set(x6100_pin_light, 0);
++                x6100_gpio_set("keyboard_backlight", 0);
+                 atu = ATU_DONE;
+             }
+             break;
+diff -Naur X6100Control.orig/include/aether_radio/x6100_control/low/gpio.h X6100Control/include/aether_radio/x6100_control/low/gpio.h
+--- X6100Control.orig/include/aether_radio/x6100_control/low/gpio.h	2024-12-08 21:21:00.341500285 -0500
++++ X6100Control/include/aether_radio/x6100_control/low/gpio.h	2024-12-08 21:23:56.574512853 -0500
+@@ -14,11 +14,4 @@
+ #include <stdbool.h>
+ #include <stdint.h>
+ 
+-AETHER_X6100CTRL_API extern int x6100_pin_wifi;
+-AETHER_X6100CTRL_API extern int x6100_pin_usb;
+-AETHER_X6100CTRL_API extern int x6100_pin_light;
+-AETHER_X6100CTRL_API extern int x6100_pin_morse_key;
+-AETHER_X6100CTRL_API extern int x6100_pin_bb_reset;
+-
+-AETHER_X6100CTRL_API bool x6100_gpio_init();
+-AETHER_X6100CTRL_API void x6100_gpio_set(int pin, int value);
++AETHER_X6100CTRL_API void x6100_gpio_set(const char *name, int value);
+diff -Naur X6100Control.orig/src/low/gpio.c X6100Control/src/low/gpio.c
+--- X6100Control.orig/src/low/gpio.c	2024-12-08 21:21:00.341500285 -0500
++++ X6100Control/src/low/gpio.c	2024-12-08 21:26:49.718420051 -0500
+@@ -9,97 +9,13 @@
+ 
+ #include "aether_radio/x6100_control/low/gpio.h"
+ 
+-#include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+ 
+-int x6100_pin_wifi;
+-int x6100_pin_usb;
+-int x6100_pin_light;
+-int x6100_pin_morse_key;
+-int x6100_pin_bb_reset;
+-
+-static int gpio_open_value(uint16_t pin)
+-{
+-    char str[64];
+-    int fd, len;
+-
+-    snprintf(str, sizeof(str), "/sys/class/gpio/gpio%i/value", pin);
+-
+-    return open(str, O_RDWR);
+-}
+-
+-static bool gpio_create(uint16_t pin)
+-{
+-    char str[64];
+-    int fd, len;
+-
+-    len = snprintf(str, sizeof(str), "%i\n", pin);
+-    fd = open("/sys/class/gpio/export", O_WRONLY);
+-
+-    if (fd < 0)
+-        return false;
+-
+-    if (write(fd, str, len) < 0)
+-    {
+-        close(fd);
+-        return false;
+-    }
+-
+-    close(fd);
+-
+-    snprintf(str, sizeof(str), "/sys/class/gpio/gpio%i/direction", pin);
+-    fd = open(str, O_WRONLY);
+-
+-    if (fd < 0)
+-        return false;
+-
+-    if (write(fd, "out\n", 4) < 0)
+-    {
+-        close(fd);
+-        return false;
+-    }
+-
+-    close(fd);
+-    return true;
+-}
+-
+-static int gpio_open(uint16_t pin)
+-{
+-    int fd = gpio_open_value(pin);
+-
+-    if (fd < 0)
+-    {
+-        if (gpio_create(pin))
+-        {
+-            fd = gpio_open_value(pin);
+-        }
+-        else
+-        {
+-            fd = -1;
+-        }
+-    }
+-
+-    return fd;
+-}
+-
+-bool x6100_gpio_init()
+-{
+-    x6100_pin_wifi = gpio_open(357);
+-    x6100_pin_usb = gpio_open(138);
+-    x6100_pin_light = gpio_open(143);
+-    x6100_pin_morse_key = gpio_open(203);
+-    x6100_pin_bb_reset = gpio_open(204);
+-
+-    return (x6100_pin_wifi > 0) && (x6100_pin_usb > 0) && (x6100_pin_light > 0) && (x6100_pin_morse_key > 0) && (x6100_pin_bb_reset > 0);
+-}
+-
+-void x6100_gpio_set(int pin, int value)
++void x6100_gpio_set(const char *name, int value)
+ {
+-    char str[8];
++    char command[80];
+ 
+-    int len = snprintf(str, sizeof(str), "%i\n", value);
+-    write(pin, str, len);
++    snprintf(command, sizeof(command), "gpioset -t 0 %s=%d\n", name, value);
++    system(command);
+ }
