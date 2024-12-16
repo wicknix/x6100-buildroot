@@ -1,0 +1,16 @@
+diff -Naur x6100-gui-v0.28.0.orig/src/audio.c x6100-gui-v0.28.0/src/audio.c
+--- x6100-gui-v0.28.0.orig/src/audio.c	2024-12-03 01:09:34.000000000 -0500
++++ x6100-gui-v0.28.0/src/audio.c	2024-12-15 20:21:24.809159409 -0500
+@@ -31,10 +31,10 @@
+ static pa_context           *ctx;
+ 
+ static pa_stream            *play_stm;
+-static char                 *play_device = "alsa_output.platform-sound.stereo-fallback";
++static char                 *play_device = "alsa_output.0.stereo-fallback";
+ 
+ static pa_stream            *capture_stm;
+-static char                 *capture_device = "alsa_input.platform-sound.stereo-fallback";
++static char                 *capture_device = "alsa_input.0.stereo-fallback";
+ 
+ static pa_stream            *monitor_stm = NULL;
+ 
