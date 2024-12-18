@@ -1,0 +1,17 @@
+diff -Naur eudev-3.2.14.orig/rules/78-sound-card.rules eudev-3.2.14/rules/78-sound-card.rules
+--- eudev-3.2.14.orig/rules/78-sound-card.rules	2023-10-03 13:22:44.000000000 -0400
++++ eudev-3.2.14/rules/78-sound-card.rules	2024-12-17 21:45:37.842547757 -0500
+@@ -53,7 +53,12 @@
+ # If we reach here, the device nor any of its parents are USB/PCI/firewire bus devices.
+ # If we now find a parent that is a platform device, assume that we're working with
+ # an internal sound card.
+-SUBSYSTEMS=="platform", ENV{SOUND_FORM_FACTOR}="internal", GOTO="sound_end"
++# fv - the next line cause the internal soundcard not to have the properties:
++# ID_PATH = platform-sound
++# ID_PATH_TAG = platform-sound
++# reverting this commit:
++# https://github.com/eudev-project/eudev/commit/247724da450b3bb8ef8d1963288069941b5cd904#diff-f3e8ede7d3898f089f4c3892342de4101d6db69e1a7dd6f32032c8fb06222140
++#SUBSYSTEMS=="platform", ENV{SOUND_FORM_FACTOR}="internal", GOTO="sound_end"
+ 
+ LABEL="skip_pci"
+ 
