@@ -1,0 +1,21 @@
+diff -Naur linux-6.11.11.orig/sound/soc/sunxi/sun8i-codec.c linux-6.11.11/sound/soc/sunxi/sun8i-codec.c
+--- linux-6.11.11.orig/sound/soc/sunxi/sun8i-codec.c	2024-12-05 07:54:34.000000000 -0500
++++ linux-6.11.11/sound/soc/sunxi/sun8i-codec.c	2024-12-28 15:51:31.339792474 -0500
+@@ -1648,7 +1648,16 @@
+ 		return PTR_ERR(scodec->regmap);
+ 	}
+ 
+-	regcache_cache_only(scodec->regmap, true);
++	// fv - kernel commit c556814b926c3f16fdca3d18cac793ccf0d14c44
++	//      added the line below that breaks FT8 TX
++	//
++	//      Commit info:
++	//      Author: Samuel Holland <samuel@sholland.org>
++	//      Date:   Sat Mar 2 15:00:36 2024 +0100
++	//
++	//      ASoC: sun8i-codec: Enable bus clock at STANDBY and higher bias
++	//
++	//regcache_cache_only(scodec->regmap, true);
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+ 		ret = sun8i_codec_runtime_resume(&pdev->dev);
