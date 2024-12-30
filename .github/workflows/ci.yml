@@ -1,0 +1,52 @@
+name: Build X6100 buildroot image
+
+on:
+  push:
+    tags:
+      - '**'
+
+env:
+  BUILDROOT_VERSION: 2024.11
+  SDCARD_NAME: sdcard-${{ github.ref_name }}
+  CHECKSUMS_FILENAME: checksums-sha256.txt
+
+jobs:
+  build-image:
+    name: Build X6100 buildroot image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upgrade Ubuntu and install prereqs
+        run: |
+          sudo apt update
+          sudo apt full-upgrade
+          sudo apt install -y libgnutls28-dev
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Download and extract buildroot
+        run: |
+          cd ..
+          curl -s -S "https://buildroot.org/downloads/buildroot-${BUILDROOT_VERSION}.tar.xz" | tar xJf -
+      - name: Build image
+        env:
+          BR2_EXTERNAL: ${GITHUB_WORKSPACE}
+        run: |
+          cd ../buildroot-${BUILDROOT_VERSION}
+          make X6100_defconfig
+          make
+      - name: Checksum and zip
+        run: |
+          cd ../buildroot-${BUILDROOT_VERSION}/output/images
+          mv sdcard.img ${SDCARD_NAME}.img
+          sha256sum ${SDCARD_NAME}.img > ${CHECKSUMS_FILENAME}
+          zip -9 ${GITHUB_WORKSPACE}/${SDCARD_NAME}.zip ${SDCARD_NAME}.img ${CHECKSUMS_FILENAME}
+          cd ${GITHUB_WORKSPACE}
+          sha256sum ${SDCARD_NAME}.zip > ${CHECKSUMS_FILENAME}
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: ${{ github.ref_type == 'tag' }}
+        with:
+          files: |
+            ${{ env.SDCARD_NAME }}.zip
+            ${{ env.CHECKSUMS_FILENAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
