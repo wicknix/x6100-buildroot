@@ -8,6 +8,7 @@ set -e
 backups="
 /etc/NetworkManager/system-connections/*	network_manager.zip
 /etc/ssh/*_key*					ssh_host_keys.zip
+/root/.ssh/*					root_ssh.zip
 "
 backup_dir="/mnt/backups"
 
@@ -35,7 +36,7 @@ backup() {
         destination="${bkp##*$tab}"
         source_dir="${source%/*}"
         source_pattern="${source##*/}"
-        files="$(cd "$source_dir" && { ls -1 $source_pattern 2> /dev/null || true; })"
+        files="$({ cd "$source_dir" && ls -1 $source_pattern; } 2> /dev/null || true)"
         # skip backup if there are no files to backup
         [ -n "$files" ] || continue
         # make backup directory if it doesn't exist
@@ -53,7 +54,7 @@ restore() {
         destination="${bkp##*$tab}"
         source_dir="${source%/*}"
         source_pattern="${source##*/}"
-        files="$(cd "$source_dir" && { ls -1 $source_pattern 2> /dev/null || true; })"
+        files="$({ cd "$source_dir" && ls -1 $source_pattern; } 2> /dev/null || true)"
         # skip restore if there are already matching files
         [ -z "$files" ] || continue
         zipfile_full_path="$backup_dir/$destination"

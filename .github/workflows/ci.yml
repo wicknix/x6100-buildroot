@@ -6,7 +6,7 @@ on:
       - '**'
 
 env:
-  BUILDROOT_VERSION: 2024.11
+  BUILDROOT_VERSION: 2024.11.1
   SDCARD_NAME: sdcard-${{ github.ref_name }}
   CHECKSUMS_FILENAME: checksums-sha256.txt
 
@@ -38,7 +38,7 @@ jobs:
           cd ../buildroot-${BUILDROOT_VERSION}/output/images
           mv sdcard.img ${SDCARD_NAME}.img
           sha256sum ${SDCARD_NAME}.img > ${CHECKSUMS_FILENAME}
-          zip -9 ${GITHUB_WORKSPACE}/${SDCARD_NAME}.zip ${SDCARD_NAME}.img ${CHECKSUMS_FILENAME}
+          zip ${GITHUB_WORKSPACE}/${SDCARD_NAME}.zip ${SDCARD_NAME}.img ${CHECKSUMS_FILENAME}
           cd ${GITHUB_WORKSPACE}
           sha256sum ${SDCARD_NAME}.zip > ${CHECKSUMS_FILENAME}
       - name: Release
