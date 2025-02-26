@@ -1,6 +1,6 @@
-diff -Naur x6100-gui.orig/src/backlight.c x6100-gui/src/backlight.c
---- x6100-gui.orig/src/backlight.c	2025-02-19 00:10:21.000000000 -0500
-+++ x6100-gui/src/backlight.c	2025-02-19 15:02:06.169201084 -0500
+diff -Nuar x6100-gui.orig/src/backlight.c x6100-gui/src/backlight.c
+--- x6100-gui.orig/src/backlight.c	2025-02-23 06:14:49.000000000 -0500
++++ x6100-gui/src/backlight.c	2025-02-25 20:43:31.000000000 -0500
 @@ -26,7 +26,7 @@
  
  static void backlight_timer(lv_timer_t *t) {
@@ -45,10 +45,10 @@ diff -Naur x6100-gui.orig/src/backlight.c x6100-gui/src/backlight.c
  
          voice_say_text_fmt("Display on");
          on = true;
-diff -Naur x6100-gui.orig/src/cat.cpp x6100-gui/src/cat.cpp
---- x6100-gui.orig/src/cat.cpp	2025-02-19 00:10:21.000000000 -0500
-+++ x6100-gui/src/cat.cpp	2025-02-19 15:03:29.352913610 -0500
-@@ -968,7 +968,7 @@
+diff -Nuar x6100-gui.orig/src/cat.cpp x6100-gui/src/cat.cpp
+--- x6100-gui.orig/src/cat.cpp	2025-02-23 06:14:49.000000000 -0500
++++ x6100-gui/src/cat.cpp	2025-02-25 20:43:31.000000000 -0500
+@@ -988,7 +988,7 @@
  
  void cat_init() {
      /* UART */
@@ -57,9 +57,9 @@ diff -Naur x6100-gui.orig/src/cat.cpp x6100-gui/src/cat.cpp
  
      int fd = open("/dev/ttyS2", O_RDWR | O_NONBLOCK | O_NOCTTY);
  
-diff -Naur x6100-gui.orig/src/radio.c x6100-gui/src/radio.c
---- x6100-gui.orig/src/radio.c	2025-02-19 00:10:21.000000000 -0500
-+++ x6100-gui/src/radio.c	2025-02-19 15:03:03.407067546 -0500
+diff -Nuar x6100-gui.orig/src/radio.c x6100-gui/src/radio.c
+--- x6100-gui.orig/src/radio.c	2025-02-23 06:14:49.000000000 -0500
++++ x6100-gui/src/radio.c	2025-02-25 20:43:31.000000000 -0500
 @@ -348,9 +348,9 @@
  }
  
@@ -81,16 +81,16 @@ diff -Naur x6100-gui.orig/src/radio.c x6100-gui/src/radio.c
  
      notify_tx = tx_cb;
      notify_rx = rx_cb;
-@@ -709,5 +709,5 @@
+@@ -711,5 +711,5 @@
  }
  
  void radio_set_morse_key(bool on) {
 -    x6100_gpio_set(x6100_pin_morse_key, on ? 0 : 1);
 +    x6100_gpio_set("morse_key", on ? 0 : 1);
  }
-diff -Naur x6100-gui.orig/src/wifi.cpp x6100-gui/src/wifi.cpp
---- x6100-gui.orig/src/wifi.cpp	2025-02-19 00:10:21.000000000 -0500
-+++ x6100-gui/src/wifi.cpp	2025-02-19 15:02:29.861973676 -0500
+diff -Nuar x6100-gui.orig/src/wifi.cpp x6100-gui/src/wifi.cpp
+--- x6100-gui.orig/src/wifi.cpp	2025-02-23 06:14:49.000000000 -0500
++++ x6100-gui/src/wifi.cpp	2025-02-25 20:43:31.000000000 -0500
 @@ -91,7 +91,7 @@
  void wifi_power_on() {
      LV_LOG_USER("Power on wifi/bt");

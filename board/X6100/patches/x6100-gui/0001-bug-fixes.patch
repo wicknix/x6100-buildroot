@@ -1,24 +1,3 @@
-diff -Naur x6100-gui.orig/src/dialog_swrscan.c x6100-gui/src/dialog_swrscan.c
---- x6100-gui.orig/src/dialog_swrscan.c	2025-02-19 00:10:21.000000000 -0500
-+++ x6100-gui/src/dialog_swrscan.c	2025-02-19 15:14:55.292001046 -0500
-@@ -42,7 +42,7 @@
- static bool    linear;
- static int32_t span;
- 
--static Observer *freq_obs;
-+static ObserverDelayed *freq_obs;
- static Observer *linear_obs;
- static Observer *span_obs;
- 
-@@ -282,7 +282,7 @@
-         dialog_swrscan_run_cb(NULL);
-     }
-     if (freq_obs) {
--        observer_del(freq_obs);
-+        observer_delayed_del(freq_obs);
-         freq_obs = NULL;
-     }
-     if (linear_obs) {
 diff -Naur x6100-gui.orig/src/scheduler.cpp x6100-gui/src/scheduler.cpp
 --- x6100-gui.orig/src/scheduler.cpp	2025-02-19 00:10:21.000000000 -0500
 +++ x6100-gui/src/scheduler.cpp	2025-02-19 15:13:49.578765371 -0500
