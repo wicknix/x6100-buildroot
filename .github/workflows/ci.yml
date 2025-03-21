@@ -6,7 +6,7 @@ on:
       - '**'
 
 env:
-  BUILDROOT_VERSION: 2024.11.2
+  BUILDROOT_VERSION: 2025.02
   SDCARD_NAME: sdcard-${{ github.ref_name }}
   CHECKSUMS_FILENAME: checksums-sha256.txt
 
