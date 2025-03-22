@@ -50,6 +50,7 @@ make
 - Rui Oliveira CT7ALW
 - Олег Белоусов (Oleg Belusov) R1CBU
 - Георгий Дюльдин (Georgy Dyuldin) R2RFE
+- Franco Venturi
 
 
 ## References
