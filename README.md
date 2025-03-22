@@ -13,7 +13,7 @@ tar xJf buildroot-2024.11.2.tar.xz
 
 - clone this repository
 ```
-git clone https://github.com/fventuri/x6100-buildroot.git
+git clone https://github.com/wicknix/x6100-buildroot.git
 ```
 
 - build the buildroot Linux system and create the SD card image (it will take a while)
