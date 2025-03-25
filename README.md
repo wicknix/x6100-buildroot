@@ -1,3 +1,7 @@
+
+![neofetch-x6100](https://github.com/user-attachments/assets/b62a4c1f-2dc6-4b3c-9ad1-294254c987dd)
+
+
 # Xiegu X6100 buildroot
 
 External buildroot tree for the Xiegu X6100 transceiver.
