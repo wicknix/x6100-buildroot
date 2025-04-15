@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-X6100_GUI_VERSION = v0.29.2-color-mod
+X6100_GUI_VERSION = v0.29.2-color-mod1
 #X6100_GUI_SITE = https://github.com/gdyuldin/x6100_gui
 X6100_GUI_SITE = https://github.com/wicknix/x6100_gui
 X6100_GUI_SITE_METHOD = git
